@@ -1,26 +1,26 @@
-var domReady = (function (win, doc) {
-    var isReady = 0, queue = [], fnc, fn, _timer,
+var domReady = (function () {
+    var doc = document, isReady = 1, queue = [], fnc, _timer,
         modern = doc.addEventListener, doScroll = !modern, 
-        re = modern ? /^.(?!oading)/ : /^c/,
+        re = modern ? /^.(?!oading)/ : /^c/, handler,
         add = modern ? 'addEventListener' : 'attachEvent',
         event = modern ? 'DOMContentLoaded' : 'onreadystatechange',
         remove = modern ? 'removeEventListener' : 'detachEvent';
     
     function ready() {
-        if(isReady) return;
+        if(!isReady) return;
         clearInterval(_timer);
+        doc[remove](event, handler, false);
         while ((fnc = queue.shift())) fnc();
         isReady = 1;
     }
 
     if(re.test(doc.readyState)) ready();
     else {
-        doc[add](event, fn = function () {
+        doc[add](event, handler = function () {
             if(!re.test(doc.readyState)) return;
-            doc[remove](event, fn, false);
             ready();
         }, false);
-        try {doScroll = doScroll && !win.frameElement && doc.documentElement.doScroll;} catch (e){}
+        try {doScroll = doScroll && !window.frameElement;} catch (e){}
         if(doScroll) {
             _timer = setInterval(function() {
                 try {doc.body.doScroll('up');ready();} catch(e) {}
@@ -30,4 +30,4 @@ var domReady = (function (win, doc) {
     return function (cb) {
         isReady ? cb() : queue.push(cb);
     };
-}(window, document));
+}());
