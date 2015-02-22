@@ -23,7 +23,7 @@ var domReady = (function () {
         try {doScroll = doScroll && !window.frameElement;} catch (e){}
         if(doScroll) {
             _timer = setInterval(function() {
-                try {doc.body.doScroll('up');ready();} catch(e) {}
+                try {doc.body.doScroll('left');ready();} catch(e) {}
             }, 10);
         }
     }
